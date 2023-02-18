@@ -1,35 +1,45 @@
 import React, { useRef } from "react";
 import axios from "axios";
 import { Form, Button } from "react-bootstrap";
-import img from "../assets/muqeet.jpg";
 
-const allowedExtensions = ["jpg", "jpeg", "png", "gif"];
-
-const uploadImage = async (file, props) => {
-  const formData = new FormData();
-  formData.append("url", file);
-
-  try {
-    // console.log(`${props.url}source=${img}&access_token=${props.access_token}`);
-    const response = await axios.post(
-      `${props.url}source=${img}&access_token=${props.access_token}`
-    );
-    alert(response.data);
-  } catch (error) {
-    alert(error);
-  }
-};
-
-const FileUpload = (props) => {
+const FileUpload = ({ type, url, access_token, message }) => {
   const fileInputRef = useRef(null);
+
+  const allowedExtensions =
+    type === "photo"
+      ? ["jpg", "jpeg", "png", "gif"]
+      : ["mp4", "mov", "avi", "wmv"];
+
+  const uploadFile = async (file) => {
+    const formData = new FormData();
+    formData.append("source", file);
+    if (type === "photo") {
+      formData.append("message", message);
+    } else if (type === "video") {
+      formData.append("description", message);
+    }
+
+    try {
+      const response = await axios.post(
+        `${url}?source=${file}&access_token=${access_token}`,
+        formData
+      );
+      if (type === "photo") {
+        alert("Image Posted Sucessfully");
+      } else {
+        alert("Video Posted Sucessfully");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
     const file = fileInputRef.current.files[0];
     const extension = file.name.split(".").pop().toLowerCase();
-
     if (allowedExtensions.includes(extension)) {
-      uploadImage(file, props);
+      uploadFile(file);
     } else {
       alert(`Only ${allowedExtensions.join(", ")} files are allowed.`);
     }
@@ -38,14 +48,14 @@ const FileUpload = (props) => {
   return (
     <Form onSubmit={handleFormSubmit}>
       <Form.Group>
-        <Form.Label>Choose an image file:</Form.Label>
+        <Form.Label>Choose a {type} file:</Form.Label>
         <Form.Control
           type="file"
-          accept=".jpg,.jpeg,.png,.gif"
+          accept={`.${allowedExtensions.join(",.")}`}
           ref={fileInputRef}
         />
         <Form.Text className="text-muted">
-          Only .jpg, .jpeg, .png, and .gif files are allowed.
+          Only {allowedExtensions.join(", ")} files are allowed.
         </Form.Text>
       </Form.Group>
       <Button variant="primary" type="submit">

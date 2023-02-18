@@ -350,38 +350,24 @@ const ReactFacebookLogin = () => {
       <div className="col-md-6 m-auto mt-5 pt-5">
         <h3 className="h2">Facebook Image Post</h3>
         <div className="form-group">
-          <form className="" onSubmit={handlePostImage}>
-            <label htmlFor=""></label>
-            <input
-              type="text"
-              name="message"
-              id=""
-              value={postMessage}
-              onChange={(e) => setPostMessage(e.target.value)}
-              className="form-control"
-            ></input>
-            <div className="form-group">
-              <label htmlFor=""></label>
-              <input
-                type="file"
-                className="form-control-file"
-                name=""
-                id=""
-                placeholder=""
-                aria-describedby="fileHelpId"
-              ></input>
-              <small id="fileHelpId" className="form-text text-muted">
-                Help text
-              </small>
-            </div>
-            <button type="submit" className="btn btn-primary mt-3">
-              Post Image
-            </button>
-          </form>
           <FileUpload
-            url={`https://graph.facebook.com/${pageId}/photos?`}
-            access_token={accessToken}
+            url={`https://graph.facebook.com/${pageId}/photos`}
+            access_token={longPageAccessToken}
             source={img}
+            message={postMessage}
+            type="photo"
+          />
+        </div>
+      </div>
+      <div className="col-md-6 m-auto mt-5 pt-5">
+        <h3 className="h2">Facebook Video Post</h3>
+        <div className="form-group">
+          <FileUpload
+            url={`https://graph-video.facebook.com/v16.0/${pageId}/videos`}
+            access_token={longPageAccessToken}
+            source={img}
+            message={postMessage}
+            type="video"
           />
         </div>
       </div>
