@@ -9,12 +9,12 @@ export default function Nav() {
   };
 
   return (
-    <nav class="navbar navbar-expand-sm navbar-light bg-light">
-      <button class="navbar-brand" href="#">
+    <nav className="navbar navbar-expand-sm navbar-light bg-light">
+      <button className="navbar-brand" href="#">
         RippleBerry
       </button>
       <button
-        class="navbar-toggler d-lg-none"
+        className="navbar-toggler d-lg-none"
         type="button"
         data-toggle="collapse"
         data-target="#collapsibleNavId"
@@ -22,18 +22,18 @@ export default function Nav() {
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
-        <span class="navbar-toggler-icon"></span>
+        <span className="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="collapsibleNavId">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item active">
-            <button class="nav-link" href="#">
-              Home <span class="sr-only">(current)</span>
+      <div className="collapse navbar-collapse" id="collapsibleNavId">
+        <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li className="nav-item active">
+            <button className="nav-link" href="#">
+              Home <span className="sr-only">(current)</span>
             </button>
           </li>
-          <li class="nav-item dropdown">
+          <li className="nav-item dropdown">
             <button
-              class="nav-link dropdown-toggle"
+              className="nav-link dropdown-toggle"
               href="#"
               id="dropdownId"
               data-toggle="dropdown"
@@ -42,11 +42,11 @@ export default function Nav() {
             >
               Social Media
             </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownId">
-              <button class="dropdown-item" href="#">
+            <div className="dropdown-menu" aria-labelledby="dropdownId">
+              <button className="dropdown-item" href="#">
                 Facebook
               </button>
-              <button class="dropdown-item" href="#">
+              <button className="dropdown-item" href="#">
                 Instagram
               </button>
             </div>
