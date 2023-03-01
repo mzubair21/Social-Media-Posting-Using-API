@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-
+import { NavLink } from "react-router-dom";
 export default function Nav() {
   const user = useSelector((state) => state.user);
 
@@ -26,11 +26,16 @@ export default function Nav() {
       </button>
       <div className="collapse navbar-collapse" id="collapsibleNavId">
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li className="nav-item active">
+          {/* <li className="nav-item active">
             <button className="nav-link" href="#">
               Home <span className="sr-only">(current)</span>
             </button>
-          </li>
+          </li> */}
+          {/* <li className="nav-item active">
+            <button className="nav-link" href="#">
+              Videos <span className="sr-only">(current)</span>
+            </button>
+          </li> */}
           <li className="nav-item dropdown">
             <button
               className="nav-link dropdown-toggle"
@@ -40,14 +45,14 @@ export default function Nav() {
               aria-haspopup="true"
               aria-expanded="false"
             >
-              Social Media
+              Implementation
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownId">
               <button className="dropdown-item" href="#">
-                Facebook
+                <NavLink to="/socialmedia">Social Media</NavLink>
               </button>
               <button className="dropdown-item" href="#">
-                Instagram
+                <NavLink to="/sprout">Sprout</NavLink>
               </button>
             </div>
           </li>
