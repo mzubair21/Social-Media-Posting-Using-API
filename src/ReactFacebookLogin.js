@@ -26,6 +26,8 @@ const ReactFacebookLogin = () => {
   const [longPageAccessToken, setLongPageAccessToken] = useState(
     localStorage.getItem("fbLongPageAccessToken") || ""
   );
+
+  const [instaId, setInstaId] = useState(localStorage.getItem("instaId") || "");
   //Short Access Token + User Data
   const [accessToken, setAccessToken] = useState(
     localStorage.getItem("fbAccessToken") || ""
@@ -69,8 +71,10 @@ const ReactFacebookLogin = () => {
         : "Copy Tokken"
       : "Generate"
   );
-  const [generatePageButtonText, setGeneratePageButtonText] =
-    useState("Copy Tokken");
+  // const [generatePageButtonText, setGeneratePageButtonText] =
+  //   useState("Copy Tokken");
+
+  const generatePageButtonText = "Copy Tokken";
 
   // Facebook Login
   // Copy Text and Generate Long Lived Token
@@ -97,6 +101,7 @@ const ReactFacebookLogin = () => {
       const shortLivedToken = accessToken;
 
       try {
+        //Generating Long Lived Token bounded with App
         const response = await axios.get(
           `https://graph.facebook.com/v12.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${appId}&client_secret=${appSecret}&fb_exchange_token=${shortLivedToken}`
         );
@@ -105,7 +110,7 @@ const ReactFacebookLogin = () => {
         setSuccess("Long Live Tokken Generated !! Succssfully");
         localStorage.setItem("fbLongAccessToken", response.data.access_token);
 
-        //Populate Table for User ID and Page ID
+        //Api for Getting Page Information
         try {
           const response2 = await axios.get(
             `https://graph.facebook.com/v12.0/me/accounts?access_token=${longAccessToken}`
@@ -131,6 +136,17 @@ const ReactFacebookLogin = () => {
           );
 
           //Generate Long Lived Page Token
+        } catch (err) {
+          setError(err.message);
+        }
+        try {
+          // Insta ID
+          const url = `https://graph-video.facebook.com/v16.0/`;
+          const instaIdUrl = `${url}${pageId}?fields=instagram_business_account&access_token=${longAccessToken}`;
+          const responseInsta = await axios.get(instaIdUrl);
+          const insta_id = responseInsta.data.instagram_business_account.id;
+          localStorage.setItem("instaId", insta_id);
+          setInstaId(insta_id);
         } catch (err) {
           setError(err.message);
         }
@@ -188,22 +204,6 @@ const ReactFacebookLogin = () => {
 
   //Post Facebook Status
   const handlePostStatus = async (e) => {
-    e.preventDefault();
-    const url = `https://graph.facebook.com/v12.0/101314906231016/feed?message=${postMessage}&access_token=${longPageAccessToken}`;
-    axios
-      .post(url, {})
-      .then((res) => {
-        setPostMessage("");
-        alert("Status Posted Successfully");
-      })
-      .catch((err) => {
-        alert(err.message);
-        setError(err.message);
-      });
-  };
-
-  //Post Facebook Image
-  const handlePostImage = async (e) => {
     e.preventDefault();
     const url = `https://graph.facebook.com/v12.0/101314906231016/feed?message=${postMessage}&access_token=${longPageAccessToken}`;
     axios
@@ -317,6 +317,7 @@ const ReactFacebookLogin = () => {
             <th>User Name</th>
             <th>Page ID</th>
             <th>Page</th>
+            <th>Insta ID</th>
           </tr>
         </thead>
         <tbody>
@@ -325,6 +326,7 @@ const ReactFacebookLogin = () => {
             <td>{userName}</td>
             <td>{pageId}</td>
             <td>{pageName}</td>
+            <td>{instaId}</td>
           </tr>
         </tbody>
       </table>
@@ -341,33 +343,38 @@ const ReactFacebookLogin = () => {
               onChange={(e) => setPostMessage(e.target.value)}
               className="form-control"
             ></input>
-            <button type="submit" className="btn btn-primary mt-3">
-              Post Status
+            <button type="submit" className="btn btn-primary mt-3 mr-3">
+              Post Status Facebook
             </button>
           </form>
         </div>
       </div>
       <div className="col-md-6 m-auto mt-5 pt-5">
-        <h3 className="h2">Facebook Image Post</h3>
+        <h3 className="h2">Image Post</h3>
         <div className="form-group">
           <FileUpload
-            url={`https://graph.facebook.com/${pageId}/photos`}
+            url={`https://graph.facebook.com/v16.0/`}
             access_token={longPageAccessToken}
+            Id_token={longAccessToken}
             source={img}
             message={postMessage}
             type="photo"
+            fileType="photos"
+            pageId={pageId}
           />
         </div>
       </div>
       <div className="col-md-6 m-auto mt-5 pt-5">
-        <h3 className="h2">Facebook Video Post</h3>
+        <h3 className="h2">Video Post</h3>
         <div className="form-group">
           <FileUpload
-            url={`https://graph-video.facebook.com/v16.0/${pageId}/videos`}
+            url={`https://graph-video.facebook.com/v16.0/`}
             access_token={longPageAccessToken}
             source={img}
             message={postMessage}
             type="video"
+            fileType="videos"
+            pageId={pageId}
           />
         </div>
       </div>
