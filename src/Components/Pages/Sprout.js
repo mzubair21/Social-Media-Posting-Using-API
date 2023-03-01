@@ -8,7 +8,7 @@ function Sprout() {
   const [isRecording, setIsRecording] = useState(false);
   const [recordedSrc, setRecordedSrc] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
-  const [folderId, setFolderId] = useState(null);
+  const [folderId, setFolderId] = useState("029fdbbc121fe78c");
 
   useEffect(() => {
     const video = videoRef.current;
@@ -65,19 +65,27 @@ function Sprout() {
   };
 
   const handleCreateFolder = async () => {
-    const folderName = "Test Subscriber1";
+    const folderName = "Test Subscriber";
+    const data = JSON.stringify({ name: folderName });
     try {
-      const response = await axios.post(
-        `https://api.sproutvideo.com/v1/folders?api_key=${apiKey}`,
-        { name: folderName },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setFolderId(response.data.id);
-      console.log("Folder created successfully:", response.data);
+      var config = {
+        method: "post",
+        url: "https://api.sproutvideo.com/v1/folders?api_key=${apiKey}",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      const response = axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      // setFolderId(response.data.id);
+      console.log("Folder created successfully:", response);
     } catch (error) {
       console.error("Error creating folder:", error);
     }
@@ -86,9 +94,10 @@ function Sprout() {
   const handleUpload = async () => {
     // create a new folder if one doesn't exist
     // if (!folderId) {
-    //   await handleCreateFolder();
+    handleCreateFolder();
     // }
     // create a new Blob from the recorded chunks and ensure it's in the correct format
+
     const blob = new Blob(recordedChunks, { type: "video/mp4" });
 
     // create a new FormData object to store the video file
@@ -102,7 +111,7 @@ function Sprout() {
     // send a POST request to the SproutVideo API to upload the video
     try {
       const response = await axios.post(
-        `https://api.sproutvideo.com/v1/videos?api_key=${apiKey}`,
+        `https://api.sproutvideo.com/v1/videos?api_key=${apiKey}&folder_id=${folderId}`,
         formData,
         {
           headers: {
@@ -111,6 +120,7 @@ function Sprout() {
         }
       );
       console.log("Video uploaded successfully:", response.data);
+      alert("Video uploaded successfully");
     } catch (error) {
       console.error("Error uploading video:", error);
     }
@@ -144,16 +154,13 @@ function Sprout() {
               Stop RECORD
             </button>
           )}
+          {recordedChunks.length > 0 && (
+            <button className="btn btn-primary ml-4" onClick={handleUpload}>
+              Upload Video
+            </button>
+          )}
         </div>
       </div>
-      {recordedChunks.length > 0 && (
-        <div>
-          <br />
-          <button className="btn btn-primary" onClick={handleUpload}>
-            Create Folder and Upload
-          </button>
-        </div>
-      )}
     </div>
   );
 }
